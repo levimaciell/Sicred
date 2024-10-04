@@ -3,8 +3,12 @@ package com.ufpb.sicred.controllers;
 import com.ufpb.sicred.dto.UserDto;
 import com.ufpb.sicred.dto.UserListDto;
 import com.ufpb.sicred.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -18,8 +22,9 @@ public class UserController {
     }
 
     @PostMapping
-    public void createUser(@RequestBody UserDto dto){
+    public ResponseEntity createUser(@RequestBody @Valid UserDto dto, HttpServletRequest request){
         service.createUser(dto);
+        return ResponseEntity.created(URI.create(request.getRequestURI())).build();
     }
 
     @DeleteMapping(path = "/{id}")
@@ -38,7 +43,7 @@ public class UserController {
     }
 
     @PutMapping(path = "/{id}")
-    public UserListDto updateUser(@PathVariable Long id, @RequestBody UserDto dto){
+    public UserListDto updateUser(@PathVariable Long id, @RequestBody @Valid UserDto dto){
         return service.updateUser(id, dto);
     }
 
