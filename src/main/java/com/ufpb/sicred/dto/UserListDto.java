@@ -1,39 +1,22 @@
-package com.ufpb.sicred.entities;
+package com.ufpb.sicred.dto;
 
-import com.ufpb.sicred.dto.UserDto;
-import jakarta.persistence.*;
+import com.ufpb.sicred.entities.Tipo_usuario;
 
-@Entity
-@Table(name = "tb_user")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserListDto {
     private Long id;
 
     private String nome;
     private String email;
-    private String senha;
-
     private Tipo_usuario tipoUsuario;
 
-    public User(Long id, String nome, String email, String senha, Tipo_usuario tipoUsuario) {
+    public UserListDto(Long id, String nome, String email, Tipo_usuario tipoUsuario) {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.senha = senha;
         this.tipoUsuario = tipoUsuario;
     }
 
-    public User() {
-
-    }
-
-    public User(UserDto dto) {
-        this.nome = dto.getNome();
-        this.email = dto.getEmail();
-        this.senha = dto.getSenha();
-        this.tipoUsuario = Tipo_usuario.USUARIO;
+    public UserListDto() {
     }
 
     public Long getId() {
@@ -58,14 +41,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 
     public Tipo_usuario getTipoUsuario() {
