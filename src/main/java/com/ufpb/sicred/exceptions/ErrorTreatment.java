@@ -4,6 +4,7 @@ import com.ufpb.sicred.dto.ErrorDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,6 +55,20 @@ public class ErrorTreatment {
         );
 
         return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDto> httpMessageNotReadable
+            (HttpMessageNotReadableException exception, HttpServletRequest request) {
+
+        ErrorDto dto = new ErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST,
+                List.of(exception.getMessage()),
+                request.getServletPath()
+        );
+
+        return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ufpb.sicred.dto;
+package com.ufpb.sicred.dto.user;
 
 import com.ufpb.sicred.entities.Tipo_usuario;
 

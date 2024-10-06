@@ -1,4 +1,4 @@
-package com.ufpb.sicred.dto;
+package com.ufpb.sicred.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,30 +16,35 @@ public class UserDto{
         @Size(min = 8, message = "A senha deve ter no mínimo 8 letras")
         private String senha;
 
+        public UserDto(String nome, String email, String senha) {
+                this.nome = nome;
+                this.email = email;
+                this.senha = senha;
+        }
 
-        public @NotBlank(message = "O nome não pode estar vazia")
-        String getNome() {
+        public UserDto() {
+        }
+
+        public String getNome() {
                 return nome;
         }
 
-        public void setNome(@NotBlank(message = "O nome não pode estar vazia") String nome) {
+        public void setNome(String nome) {
                 this.nome = nome;
         }
 
-        public @Email(message = "Email inválido") String getEmail() {
+        public String getEmail() {
                 return email;
         }
 
-        public void setEmail(@Email(message = "Email inválido") String email) {
+        public void setEmail(String email) {
                 this.email = email;
         }
 
-        public @Size(min = 8, message = "A senha deve ter no mínimo 8 letras") String getSenha() {
+        public String getSenha() {
                 return senha;
         }
 
-        public void setSenha(@Size(min = 8, message = "A senha deve ter no mínimo 8 letras") String senha) {
-                this.senha = senha;
-        }
+        public void setSenha(String senha) { this.senha = senha; }
 
 }

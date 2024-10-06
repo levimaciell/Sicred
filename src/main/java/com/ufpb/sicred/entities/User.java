@@ -1,6 +1,6 @@
 package com.ufpb.sicred.entities;
 
-import com.ufpb.sicred.dto.UserDto;
+import com.ufpb.sicred.dto.user.UserDto;
 import jakarta.persistence.*;
 
 @Entity

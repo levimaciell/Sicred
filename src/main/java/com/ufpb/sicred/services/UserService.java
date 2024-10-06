@@ -1,7 +1,7 @@
 package com.ufpb.sicred.services;
 
-import com.ufpb.sicred.dto.UserDto;
-import com.ufpb.sicred.dto.UserListDto;
+import com.ufpb.sicred.dto.user.UserDto;
+import com.ufpb.sicred.dto.user.UserListDto;
 import com.ufpb.sicred.entities.User;
 import com.ufpb.sicred.exceptions.UserNotFoundException;
 import com.ufpb.sicred.repositories.UserRepository;
@@ -24,6 +24,7 @@ public class UserService {
         User user = new User(dto);
 
         repository.save(user);
+
     }
 
     public void deleteUser(Long id) {

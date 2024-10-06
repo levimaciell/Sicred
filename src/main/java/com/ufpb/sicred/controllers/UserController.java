@@ -1,7 +1,7 @@
 package com.ufpb.sicred.controllers;
 
-import com.ufpb.sicred.dto.UserDto;
-import com.ufpb.sicred.dto.UserListDto;
+import com.ufpb.sicred.dto.user.UserDto;
+import com.ufpb.sicred.dto.user.UserListDto;
 import com.ufpb.sicred.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -23,6 +23,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity createUser(@RequestBody @Valid UserDto dto, HttpServletRequest request){
+
         service.createUser(dto);
         return ResponseEntity.created(URI.create(request.getRequestURI())).build();
     }
