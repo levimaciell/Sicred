@@ -18,11 +18,11 @@ public class EventController {
     private EventService eventService;
 
     // Criar Evento
-    @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody EventDto eventDto) {
-        Event createdEvent = eventService.createEvent(eventDto);
-        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
-    }
+//    @PostMapping
+//    public ResponseEntity<Event> createEvent(@RequestBody EventDto eventDto) {
+//        Event createdEvent = eventService.createEvent(eventDto);
+//        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+//    }
 
     // Excluir Evento
     @DeleteMapping("/{id}")
@@ -32,11 +32,11 @@ public class EventController {
     }
 
     // Atualizar Evento
-    @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody EventDto eventDto) {
-        Event updatedEvent = eventService.updateEvent(id, eventDto);
-        return ResponseEntity.ok(updatedEvent); // Retorna 200 OK com o evento atualizado
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody EventDto eventDto) {
+//        Event updatedEvent = eventService.updateEvent(id, eventDto);
+//        return ResponseEntity.ok(updatedEvent); // Retorna 200 OK com o evento atualizado
+//    }
 
     // Listar Evento por ID
     @GetMapping("/{id}")

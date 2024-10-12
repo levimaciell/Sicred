@@ -26,30 +26,27 @@ public class EventService {
         return eventRepository.save(e);
     }
 
-    // Excluir Evento
     public void deleteEvent(Long id) {
-        eventRepository.deleteById(id); // Exclui o evento pelo ID
+        eventRepository.deleteById(id);
     }
 
-    // Atualizar Evento
-    public Event updateEvent(Long eventId, Event u) {
+    public Event updateEvent(Long eventId, Event event) {
         Optional<Event> eventData = eventRepository.findById(eventId);
         if(eventData.isPresent()){
             Event toUpdate = eventData.get();
-            toUpdate.setNome(u.getNome());
+            toUpdate.setNome(event.getNome());
             return eventRepository.save(toUpdate);
         }
         return null;
     }
 
-    // Listar Evento por ID
     public Event getEventById(Long id) {
         return eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Evento não encontrado")); // Retorna o evento ou lança uma exceção
+                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
     }
 
     // Listar todos Eventos
     public List<Event> getAllEvents() {
-        return eventRepository.findAll(); // Retorna todos os eventos ativos
+        return eventRepository.findAll();
     }
 }
