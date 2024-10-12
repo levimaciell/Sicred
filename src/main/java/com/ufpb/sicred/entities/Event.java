@@ -12,15 +12,13 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String descricao;
 
     private LocalDateTime dataInicio;
     private LocalDateTime dataFim;
     private String local; // Pode ser nulo para eventos online
-
-    //@JoinColumn(name = "organizador_id", nullable = false)
-    private TipoUsuario tipoUsuario;
 
     private int maxParticipantes;
 
@@ -29,22 +27,29 @@ public class Event {
 
     private LocalDateTime dataCriacao;
 
+    // Relacionamento com User para representar o organizador do evento
+    @ManyToOne
+    @JoinColumn(name = "organizador_id", nullable = false)
+    private User organizador;
+
     public Event() {
     }
+
     public Event(Long id, String nome, String descricao, LocalDateTime dataInicio, LocalDateTime dataFim,
-                 String local, TipoUsuario tipoUsuario, int maxParticipantes, Status status,
-                 LocalDateTime dataCriacao) {
+                 String local, int maxParticipantes, Status status, LocalDateTime dataCriacao, User organizador) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
         this.local = local;
-        this.tipoUsuario = tipoUsuario;
         this.maxParticipantes = maxParticipantes;
         this.status = status;
         this.dataCriacao = dataCriacao;
+        this.organizador = organizador;
     }
+
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -94,14 +99,6 @@ public class Event {
         this.local = local;
     }
 
-    public TipoUsuario getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(TipoUsuario tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-
     public int getMaxParticipantes() {
         return maxParticipantes;
     }
@@ -124,5 +121,13 @@ public class Event {
 
     public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
+    }
+
+    public User getOrganizador() {
+        return organizador;
+    }
+
+    public void setOrganizador(User organizador) {
+        this.organizador = organizador;
     }
 }

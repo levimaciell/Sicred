@@ -1,34 +1,29 @@
 package com.ufpb.sicred.services;
 
 import com.ufpb.sicred.entities.Event;
-import com.ufpb.sicred.dto.EventDto; // Supondo que você tenha criado um DTO para Event
+import com.ufpb.sicred.entities.User;
 import com.ufpb.sicred.repositories.EventRepository; // O repositório correspondente
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ufpb.sicred.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EventService {
 
-    @Autowired
+
+    UserRepository userRepository;
     private EventRepository eventRepository;
 
     // Criar Evento
-    public Event createEvent(EventDto eventDto) {
-        Event event = new Event();
-        event.setNome(eventDto.getNome());
-        event.setDescricao(eventDto.getDescricao());
-        event.setDataInicio(eventDto.getDataInicio());
-        event.setDataFim(eventDto.getDataFim());
-        event.setLocal(eventDto.getLocal());
-        event.setTipoUsuario(eventDto.getTipoUsuario());
-        event.setMaxParticipantes(eventDto.getMaxParticipantes());
-        event.setStatus(eventDto.getStatus());
-        event.setDataCriacao(LocalDateTime.now()); // Define a data de criação como agora
-        return eventRepository.save(event); // Salva o evento no banco de dados
+    public Event createEvent(Event e, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário com ID " + userId + " não encontrado"));
+
+        e.setOrganizador(user);
+
+        return eventRepository.save(e);
     }
 
     // Excluir Evento
@@ -37,22 +32,14 @@ public class EventService {
     }
 
     // Atualizar Evento
-    public Event updateEvent(Long id, EventDto eventDto) {
-        Optional<Event> optionalEvent = eventRepository.findById(id);
-        if (optionalEvent.isPresent()) {
-            Event event = optionalEvent.get();
-            event.setNome(eventDto.getNome());
-            event.setDescricao(eventDto.getDescricao());
-            event.setDataInicio(eventDto.getDataInicio());
-            event.setDataFim(eventDto.getDataFim());
-            event.setLocal(eventDto.getLocal());
-            event.setTipoUsuario(eventDto.getTipoUsuario());
-            event.setMaxParticipantes(eventDto.getMaxParticipantes());
-            event.setStatus(eventDto.getStatus());
-            return eventRepository.save(event); // Salva as atualizações no banco de dados
-        } else {
-            throw new RuntimeException("Evento não encontrado"); // Exceção personalizada ou use uma mais específica
+    public Event updateEvent(Long eventId, Event u) {
+        Optional<Event> eventData = eventRepository.findById(eventId);
+        if(eventData.isPresent()){
+            Event toUpdate = eventData.get();
+            toUpdate.setNome(u.getNome());
+            return eventRepository.save(toUpdate);
         }
+        return null;
     }
 
     // Listar Evento por ID
