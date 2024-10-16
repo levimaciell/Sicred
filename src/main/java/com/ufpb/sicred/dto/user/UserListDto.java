@@ -1,14 +1,15 @@
-package com.ufpb.sicred.dto;
+package com.ufpb.sicred.dto.user;
 
-import com.ufpb.sicred.model.TipoUsuario;
+import com.ufpb.sicred.entities.Tipo_usuario;
+
 public class UserListDto {
     private Long id;
 
     private String nome;
     private String email;
-    private TipoUsuario tipoUsuario;
+    private Tipo_usuario tipoUsuario;
 
-    public UserListDto(Long id, String nome, String email, TipoUsuario tipoUsuario) {
+    public UserListDto(Long id, String nome, String email, Tipo_usuario tipoUsuario) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -42,11 +43,11 @@ public class UserListDto {
         this.email = email;
     }
 
-    public TipoUsuario getTipoUsuario() {
+    public Tipo_usuario getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+    public void setTipoUsuario(Tipo_usuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 }

@@ -1,7 +1,6 @@
 package com.ufpb.sicred.entities;
 
 import com.ufpb.sicred.model.Status;
-import com.ufpb.sicred.model.TipoUsuario;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.ufpb.sicred.dto;
+package com.ufpb.sicred.dto.event;
 
 import com.ufpb.sicred.model.Status;
 import java.time.LocalDateTime;

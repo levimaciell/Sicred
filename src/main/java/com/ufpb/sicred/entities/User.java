@@ -1,7 +1,6 @@
 package com.ufpb.sicred.entities;
 
-import com.ufpb.sicred.dto.UserDto;
-import com.ufpb.sicred.model.TipoUsuario;
+import com.ufpb.sicred.dto.user.UserDto;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,9 +15,9 @@ public class User {
     private String email;
     private String senha;
 
-    private TipoUsuario tipoUsuario;
+    private Tipo_usuario tipoUsuario;
 
-    public User(Long id, String nome, String email, String senha, TipoUsuario tipoUsuario) {
+    public User(Long id, String nome, String email, String senha, Tipo_usuario tipoUsuario) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -34,7 +33,7 @@ public class User {
         this.nome = dto.getNome();
         this.email = dto.getEmail();
         this.senha = dto.getSenha();
-        this.tipoUsuario = TipoUsuario.USUARIO;
+        this.tipoUsuario = Tipo_usuario.USUARIO;
     }
 
     public Long getId() {
@@ -69,11 +68,11 @@ public class User {
         this.senha = senha;
     }
 
-    public TipoUsuario getTipoUsuario() {
+    public Tipo_usuario getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+    public void setTipoUsuario(Tipo_usuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 }

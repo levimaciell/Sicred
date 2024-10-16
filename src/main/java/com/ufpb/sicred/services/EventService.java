@@ -2,7 +2,8 @@ package com.ufpb.sicred.services;
 
 import com.ufpb.sicred.entities.Event;
 import com.ufpb.sicred.entities.User;
-import com.ufpb.sicred.model.TipoUsuario;
+//import com.ufpb.sicred.model.TipoUsuario;
+import com.ufpb.sicred.entities.Tipo_usuario;
 import com.ufpb.sicred.repositories.EventRepository; // O repositório correspondente
 import com.ufpb.sicred.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -13,15 +14,15 @@ import java.util.Optional;
 @Service
 public class EventService {
 
-
-    UserRepository userRepository;
+    private UserRepository userRepository;
     private EventRepository eventRepository;
 
+    // Criar Evento
     public Event createEvent(Event e, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuário com ID " + userId + " não encontrado"));
 
-        if (!user.getTipoUsuario().equals(TipoUsuario.ORGANIZADOR)) {
+        if (!user.getTipoUsuario().equals(Tipo_usuario.ORGANIZADOR)) {
             throw new RuntimeException("Apenas organizadores podem criar eventos.");
         }
 
@@ -30,21 +31,46 @@ public class EventService {
         return eventRepository.save(e);
     }
 
+    // Deletar Evento (somente o organizador pode deletar)
+    public void deleteEvent(Long eventId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário com ID " + userId + " não encontrado"));
 
-    public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
-    }
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
 
-    public Event updateEvent(Long eventId, Event event) {
-        Optional<Event> eventData = eventRepository.findById(eventId);
-        if(eventData.isPresent()){
-            Event toUpdate = eventData.get();
-            toUpdate.setNome(event.getNome());
-            return eventRepository.save(toUpdate);
+        if (!event.getOrganizador().equals(user)) {
+            throw new RuntimeException("Apenas o organizador do evento pode deletá-lo.");
         }
-        return null;
+
+        eventRepository.deleteById(eventId);
     }
 
+    // Atualizar Evento (somente o organizador pode atualizar)
+    public Event updateEvent(Long eventId, Long userId, Event event) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário com ID " + userId + " não encontrado"));
+
+        Event existingEvent = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+
+        if (!existingEvent.getOrganizador().equals(user)) {
+            throw new RuntimeException("Apenas o organizador do evento pode atualizá-lo.");
+        }
+
+        // Atualiza os dados do evento
+        existingEvent.setNome(event.getNome());
+        existingEvent.setDescricao(event.getDescricao());
+        existingEvent.setDataInicio(event.getDataInicio());
+        existingEvent.setDataFim(event.getDataFim());
+        existingEvent.setLocal(event.getLocal());
+        existingEvent.setMaxParticipantes(event.getMaxParticipantes());
+        existingEvent.setStatus(event.getStatus());
+
+        return eventRepository.save(existingEvent);
+    }
+
+    // Listar Evento por ID
     public Event getEventById(Long id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
