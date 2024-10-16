@@ -2,6 +2,7 @@ package com.ufpb.sicred.services;
 
 import com.ufpb.sicred.entities.Event;
 import com.ufpb.sicred.entities.User;
+import com.ufpb.sicred.model.TipoUsuario;
 import com.ufpb.sicred.repositories.EventRepository; // O repositório correspondente
 import com.ufpb.sicred.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,19 @@ public class EventService {
     UserRepository userRepository;
     private EventRepository eventRepository;
 
-    // Criar Evento
     public Event createEvent(Event e, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuário com ID " + userId + " não encontrado"));
 
-        e.setOrganizador(user);
+        if (!user.getTipoUsuario().equals(TipoUsuario.ORGANIZADOR)) {
+            throw new RuntimeException("Apenas organizadores podem criar eventos.");
+        }
 
+        // Associa o organizador ao evento
+        e.setOrganizador(user);
         return eventRepository.save(e);
     }
+
 
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);

@@ -11,21 +11,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/evento")
+@RequestMapping("/api")
 public class EventController {
 
     @Autowired
     private EventService eventService;
 
-    // Criar Evento
-//    @PostMapping
-//    public ResponseEntity<Event> createEvent(@RequestBody EventDto eventDto) {
-//        Event createdEvent = eventService.createEvent(eventDto);
-//        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+
+//    @PostMapping(path = "/user/{userId}/boards")
+//    BoardDTO createBoard(@RequestBody BoardDTO boardDTO, @PathVariable Long userId){
+//        Board b = convertToEntity(boardDTO);
+//        Board saved = boardService.createBoard(b, userId);
+//        return convertToDTO(saved);
 //    }
+    @PostMapping
+    public ResponseEntity<EventDto> createEvent(@RequestBody EventDto eventDto) {
+        EventDto createdEvent = eventService.createEvent(eventDto);
+        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+    }
 
     // Excluir Evento
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/evento/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build(); // Retorna 204 No Content
