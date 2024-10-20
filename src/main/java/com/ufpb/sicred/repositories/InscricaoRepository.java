@@ -1,12 +1,11 @@
 package com.ufpb.sicred.repositories;
 
-import com.ufpb.sicred.entities.User;
+import com.ufpb.sicred.entities.Inscricao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByNome(String nome);
+public interface InscricaoRepository extends JpaRepository<Inscricao, Long> {
 }

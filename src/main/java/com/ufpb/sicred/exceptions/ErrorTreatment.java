@@ -16,17 +16,17 @@ import java.util.List;
 @RestControllerAdvice
 public class ErrorTreatment {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDto> serverError(HttpServletRequest request){
-        ErrorDto dto = new ErrorDto(
-                LocalDateTime.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                List.of("Ocorreu um erro interno no servidor."),
-                request.getServletPath()
-        );
-
-        return ResponseEntity.internalServerError().body(dto);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorDto> serverError(HttpServletRequest request){
+//        ErrorDto dto = new ErrorDto(
+//                LocalDateTime.now(),
+//                HttpStatus.INTERNAL_SERVER_ERROR,
+//                List.of("Ocorreu um erro interno no servidor."),
+//                request.getServletPath()
+//        );
+//
+//        return ResponseEntity.internalServerError().body(dto);
+//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDto> methodArgumentNotValidException

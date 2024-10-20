@@ -17,6 +17,11 @@ public class EventService {
     private UserRepository userRepository;
     private EventRepository eventRepository;
 
+    public EventService(UserRepository userRepository, EventRepository eventRepository) {
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+    }
+
     // Criar Evento
     public Event createEvent(Event e, Long userId) {
         User user = userRepository.findById(userId)
