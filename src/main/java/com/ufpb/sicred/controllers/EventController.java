@@ -3,6 +3,7 @@ package com.ufpb.sicred.controllers;
 import com.ufpb.sicred.entities.Event;
 import com.ufpb.sicred.dto.event.EventDto; // Supondo que você tenha criado um DTO para Event
 import com.ufpb.sicred.services.EventService; // A classe de serviço correspondente
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class EventController {
 
     // Criar Evento (somente organizador)
     @PostMapping("/user/{userId}")
-    public ResponseEntity<EventDto> createEvent(@RequestBody EventDto eventDto, @PathVariable Long userId) {
+    public ResponseEntity<EventDto> createEvent(@Valid @RequestBody EventDto eventDto, @PathVariable Long userId) {
         Event event = convertToEntity(eventDto);
         Event createdEvent = eventService.createEvent(event, userId);
         return new ResponseEntity<>(convertToDTO(createdEvent), HttpStatus.CREATED);
@@ -34,7 +35,7 @@ public class EventController {
 
     // Atualizar Evento (somente organizador)
     @PutMapping("/user/{userId}/evento/{id}")
-    public ResponseEntity<EventDto> updateEvent(@PathVariable Long id, @PathVariable Long userId, @RequestBody EventDto eventDto) {
+    public ResponseEntity<EventDto> updateEvent(@PathVariable Long id, @PathVariable Long userId, @Valid @RequestBody EventDto eventDto) {
         Event event = convertToEntity(eventDto);
         Event updatedEvent = eventService.updateEvent(id, userId, event);
         return ResponseEntity.ok(convertToDTO(updatedEvent)); // Retorna 200 OK com o evento atualizado
@@ -42,16 +43,22 @@ public class EventController {
 
     // Listar Evento por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
+    public ResponseEntity<EventDto> getEventById(@PathVariable Long id) {
         Event event = eventService.getEventById(id);
-        return ResponseEntity.ok(event); // Retorna 200 OK com os detalhes do evento
+        if (event == null) {
+            return ResponseEntity.notFound().build(); // Retorna 404 Not Found se o evento não for encontrado
+        }
+        return ResponseEntity.ok(convertToDTO(event)); // Retorna 200 OK com os detalhes do evento
     }
 
     // Listar todos Eventos
     @GetMapping
-    public ResponseEntity<List<Event>> getAllEvents() {
+    public ResponseEntity<List<EventDto>> getAllEvents() {
         List<Event> events = eventService.getAllEvents();
-        return ResponseEntity.ok(events); // Retorna 200 OK com a lista de eventos
+        List<EventDto> eventDtos = events.stream()
+                .map(this::convertToDTO)
+                .toList(); // Converte todos os eventos para DTO
+        return ResponseEntity.ok(eventDtos); // Retorna 200 OK com a lista de eventos
     }
 
     // Métodos de conversão entre DTO e Entidade
