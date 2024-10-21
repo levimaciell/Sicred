@@ -11,10 +11,10 @@ public class Inscricao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     private User usuario;
 
-    @OneToOne
+    @ManyToOne
     private Event evento;
 
     @Enumerated(value = EnumType.STRING)
