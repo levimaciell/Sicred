@@ -1,7 +1,6 @@
 package com.ufpb.sicred.controllers;
 
 import com.ufpb.sicred.dto.inscricao.InscricaoDto;
-import com.ufpb.sicred.model.StatusInscricao;
 import com.ufpb.sicred.services.InscricaoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +19,7 @@ public class InscricaoController {
     @PostMapping()
     public InscricaoDto createInscricao(@RequestBody InscricaoDto dto){
 
-        return inscricaoService.createUser(dto);
+        return inscricaoService.createInscricao(dto);
     }
 
     @DeleteMapping(path = "/{id}")
