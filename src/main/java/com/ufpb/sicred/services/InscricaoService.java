@@ -60,8 +60,11 @@ public class InscricaoService {
     }
 
     public void deleteInscricao(Long id) {
-        inscricaoRepository.deleteById(id);
+        Inscricao inscricao = inscricaoRepository.findById(id)
+                .orElseThrow(() -> new InscricaoNotFoundException("Inscrição não encontrada"));
+        inscricaoRepository.delete(inscricao);
     }
+
 
     public InscricaoDto listInscricao(Long id){
         Inscricao inscricao = inscricaoRepository.findById(id)

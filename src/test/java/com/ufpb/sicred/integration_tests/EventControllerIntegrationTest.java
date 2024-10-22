@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,17 +50,25 @@ class EventControllerIntegrationTest {
 
     @Test
     void listEventById() throws Exception {
-        // Cria o evento para ter um ID existente
+        // Cria o evento e salva o resultado da criação
         String json = objectMapper.writeValueAsString(eventDto);
-        mockMvc.perform(post("/api/evento/user/1") // Inclui o userId na URL
+        MvcResult result = mockMvc.perform(post("/api/evento/user/1") // Inclui o userId na URL
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
 
-        // Busca o evento criado pelo ID 1
-        mockMvc.perform(get("/api/evento/1"))
-                .andExpect(status().isOk());
+        // Extrai o ID do evento criado a partir da resposta
+        String responseBody = result.getResponse().getContentAsString();
+        EventDto createdEvent = objectMapper.readValue(responseBody, EventDto.class);
+        Long eventId = createdEvent.getId();  // Supondo que seu DTO tem o campo ID
+
+        // Busca o evento pelo ID retornado
+        mockMvc.perform(get("/api/evento/" + eventId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value(eventDto.getNome()));
     }
+
 
 
     @Test
@@ -73,10 +82,16 @@ class EventControllerIntegrationTest {
     void updateEvent() throws Exception {
         // Cria o evento inicialmente
         String json = objectMapper.writeValueAsString(eventDto);
-        mockMvc.perform(post("/api/evento/user/1") // Inclui o userId na URL
+        MvcResult result = mockMvc.perform(post("/api/evento/user/1") // Inclui o userId na URL
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        // Extrai o ID do evento criado
+        String responseBody = result.getResponse().getContentAsString();
+        EventDto createdEvent = objectMapper.readValue(responseBody, EventDto.class);
+        Long eventId = createdEvent.getId();
 
         // Prepara um novo DTO para a atualização do evento
         EventDto updateEventDto = new EventDto();
@@ -87,11 +102,12 @@ class EventControllerIntegrationTest {
         String updateJson = objectMapper.writeValueAsString(updateEventDto);
 
         // Executa a requisição de atualização e verifica se o status retornado é 200 (Ok)
-        mockMvc.perform(put("/api/evento/user/1/evento/1") // Inclui o userId e eventId na URL
+        mockMvc.perform(put("/api/evento/user/1/evento/" + eventId) // Inclui o userId e o eventId correto
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateJson))
                 .andExpect(status().isOk());
     }
+
 
 
     @Test

@@ -3,7 +3,11 @@ package com.ufpb.sicred.controller_tests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufpb.sicred.controllers.InscricaoController;
 import com.ufpb.sicred.dto.inscricao.InscricaoDto;
+import com.ufpb.sicred.entities.Event;
+import com.ufpb.sicred.entities.User;
 import com.ufpb.sicred.model.StatusInscricao;
+import com.ufpb.sicred.repositories.EventRepository;
+import com.ufpb.sicred.repositories.UserRepository;
 import com.ufpb.sicred.services.InscricaoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -39,6 +44,12 @@ class InscricaoControllerTests {
     @Mock
     private InscricaoService inscricaoService;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private EventRepository eventRepository;
+
     @InjectMocks
     private InscricaoController inscricaoController;
 
@@ -55,9 +66,17 @@ class InscricaoControllerTests {
         // Inicialização do DTO para os testes
         inscricaoDto = new InscricaoDto();
         inscricaoDto.setEventoId(1L);
-        inscricaoDto.setUsuarioId(1L); // Assume um ID de usuário
-        inscricaoDto.setEventoId(1L); // Assume um ID de evento
+        inscricaoDto.setUsuarioId(1L); // Assume um ID de usuário existente
         inscricaoDto.setStatus(StatusInscricao.ACEITA);
+
+        // Mockando usuário e evento
+        User mockUser = new User();
+        mockUser.setId(1L); // ID do usuário existente
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+
+        Event mockEvent = new Event();
+        mockEvent.setId(1L); // ID do evento existente
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(mockEvent));
     }
 
     @Test
@@ -66,22 +85,25 @@ class InscricaoControllerTests {
         InscricaoDto inscricaoDto = new InscricaoDto();
         inscricaoDto.setUsuarioId(1L); // ID do usuário existente
         inscricaoDto.setEventoId(1L); // ID do evento existente
+        inscricaoDto.setStatus(StatusInscricao.ACEITA); // Configurando o status como exigido
 
         // Mock do serviço para retornar um DTO com ID
         InscricaoDto createdInscricaoDto = new InscricaoDto();
         createdInscricaoDto.setId(1L); // Simulando a criação e atribuição de um ID
         createdInscricaoDto.setUsuarioId(1L);
         createdInscricaoDto.setEventoId(1L);
-        createdInscricaoDto.setStatus(StatusInscricao.ACEITA); // Ajuste conforme necessário
+        createdInscricaoDto.setStatus(StatusInscricao.ACEITA);
 
         when(inscricaoService.createInscricao(any(InscricaoDto.class))).thenReturn(createdInscricaoDto);
 
         mockMvc.perform(post("/api/inscricao")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inscricaoDto)))
-                .andExpect(status().isOk()) // Verifica se o status retornado é 200 (OK)
+                .andExpect(status().isCreated()) // Ajusta para esperar 201 Created
                 .andExpect(jsonPath("$.id").value(createdInscricaoDto.getId())); // Verifica se o ID está presente
     }
+
+
 
 
     @Test
