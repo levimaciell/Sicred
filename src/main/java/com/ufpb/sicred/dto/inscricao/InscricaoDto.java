@@ -1,11 +1,18 @@
 package com.ufpb.sicred.dto.inscricao;
 
 import com.ufpb.sicred.model.StatusInscricao;
+import jakarta.validation.constraints.NotNull;
 
 public class InscricaoDto {
 
+    private Long id;
+    @NotNull(message = "Usuario ID não pode ser nulo")
     private Long usuarioId;
+
+    @NotNull(message = "Evento ID não pode ser nulo")
     private Long eventoId;
+
+    @NotNull(message = "Status não pode ser nulo")
     private StatusInscricao status;
 
     public Long getUsuarioId() {
@@ -31,4 +38,14 @@ public class InscricaoDto {
     public void setStatus(StatusInscricao status) {
         this.status = status;
     }
+
+    // Getters e Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
