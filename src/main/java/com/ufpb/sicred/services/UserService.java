@@ -6,6 +6,7 @@ import com.ufpb.sicred.entities.User;
 import com.ufpb.sicred.exceptions.UserNotFoundException;
 import com.ufpb.sicred.repositories.UserRepository;
 import com.ufpb.sicred.utils.Mapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,13 +15,16 @@ import java.util.List;
 public class UserService {
 
     private UserRepository repository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     public void createUser(UserDto dto){
+        dto.setSenha(passwordEncoder.encode(dto.getSenha()));
         User user = new User(dto);
 
         repository.save(user);

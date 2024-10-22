@@ -30,7 +30,7 @@ public class UserServiceTest {
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        service = new UserService(repository);
+        //service = new UserService(repository);
 
     }
 

@@ -2,10 +2,15 @@ package com.ufpb.sicred.entities;
 
 import com.ufpb.sicred.dto.user.UserDto;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,5 +79,20 @@ public class User {
 
     public void setTipoUsuario(Tipo_usuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.getSenha();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getNome();
     }
 }
