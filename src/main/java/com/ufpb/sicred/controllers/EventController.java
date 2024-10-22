@@ -2,6 +2,7 @@ package com.ufpb.sicred.controllers;
 
 import com.ufpb.sicred.entities.Event;
 import com.ufpb.sicred.dto.event.EventDto; // Supondo que você tenha criado um DTO para Event
+import com.ufpb.sicred.model.Status;
 import com.ufpb.sicred.services.EventService; // A classe de serviço correspondente
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -21,6 +23,8 @@ public class EventController {
     // Criar Evento (somente organizador)
     @PostMapping("/user/{userId}")
     public ResponseEntity<EventDto> createEvent(@Valid @RequestBody EventDto eventDto, @PathVariable Long userId) {
+        eventDto.setDataCriacao(LocalDateTime.now());
+
         Event event = convertToEntity(eventDto);
         Event createdEvent = eventService.createEvent(event, userId);
         return new ResponseEntity<>(convertToDTO(createdEvent), HttpStatus.CREATED);
@@ -60,6 +64,25 @@ public class EventController {
                 .toList(); // Converte todos os eventos para DTO
         return ResponseEntity.ok(eventDtos); // Retorna 200 OK com a lista de eventos
     }
+
+    @GetMapping(path = "/test")
+    public EventDto getEventoDto(){
+        EventDto dto = new EventDto(
+                1L,
+                "Valorant GO",
+                "valorant",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                "Split",
+                100,
+                Status.CONCLUIDO,
+                LocalDateTime.now(),
+                1L
+        );
+
+        return dto;
+    }
+
 
     // Métodos de conversão entre DTO e Entidade
     private EventDto convertToDTO(Event event) {

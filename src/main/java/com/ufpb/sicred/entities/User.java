@@ -16,8 +16,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String nome;
     private String email;
+
+    @Column(nullable = false)
     private String senha;
 
     private Tipo_usuario tipoUsuario;

@@ -3,6 +3,7 @@ package com.ufpb.sicred.services;
 import com.ufpb.sicred.dto.user.UserDto;
 import com.ufpb.sicred.dto.user.UserListDto;
 import com.ufpb.sicred.entities.User;
+import com.ufpb.sicred.exceptions.InvalidUserCreationException;
 import com.ufpb.sicred.exceptions.UserNotFoundException;
 import com.ufpb.sicred.repositories.UserRepository;
 import com.ufpb.sicred.utils.Mapper;
@@ -22,13 +23,15 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     public void createUser(UserDto dto){
+
+        if(repository.findByNome(dto.getNome()).isPresent())
+            throw new InvalidUserCreationException("Nome de usuário inválido");
+
         dto.setSenha(passwordEncoder.encode(dto.getSenha()));
         User user = new User(dto);
 
         repository.save(user);
-
     }
 
     public void deleteUser(Long id) {
