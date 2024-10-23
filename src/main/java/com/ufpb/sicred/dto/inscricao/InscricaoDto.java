@@ -12,7 +12,6 @@ public class InscricaoDto {
     @NotNull(message = "Evento ID não pode ser nulo")
     private Long eventoId;
 
-    @NotNull(message = "Status não pode ser nulo")
     private StatusInscricao status;
 
     public Long getUsuarioId() {

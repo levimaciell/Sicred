@@ -28,11 +28,10 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        //TODO: add filter before
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/login", "/api/trocar-senha").permitAll();
+                    auth.requestMatchers("/api/login", "/api/trocar-senha", "/api/evento/test").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/usuario").permitAll();
                     auth.requestMatchers( "/h2-ui/**").permitAll();
                     auth.requestMatchers("/api/**").authenticated();
