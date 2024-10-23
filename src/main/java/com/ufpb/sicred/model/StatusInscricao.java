@@ -1,5 +1,5 @@
 package com.ufpb.sicred.model;
 
 public enum StatusInscricao {
-    ACEITA, NEGADA
+    ACEITA, EM_ANALISE, NEGADA
 }

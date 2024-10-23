@@ -20,11 +20,15 @@ public class Inscricao {
     @Enumerated(value = EnumType.STRING)
     private StatusInscricao status;
 
-    public Inscricao(Long id, User usuario, Event evento, StatusInscricao status) {
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Credenciamento credenciamento;
+
+    public Inscricao(Long id, User usuario, Event evento, StatusInscricao status, Credenciamento credenciamento) {
         this.id = id;
         this.usuario = usuario;
         this.evento = evento;
         this.status = status;
+        this.credenciamento = credenciamento;
     }
 
     public Inscricao() {
@@ -60,5 +64,13 @@ public class Inscricao {
 
     public void setStatus(StatusInscricao status) {
         this.status = status;
+    }
+
+    public Credenciamento getCredenciamento() {
+        return credenciamento;
+    }
+
+    public void setCredenciamento(Credenciamento credenciamento) {
+        this.credenciamento = credenciamento;
     }
 }

@@ -54,7 +54,13 @@ public class InscricaoService {
         Credenciamento credenciamento = new Credenciamento();
         credenciamento.setInscricao(inscricao);
         credenciamento.setStatus(StatusCredenciamento.NAO_CREDENCIADO);
+
+
         credenciamentoRepository.save(credenciamento);
+        inscricao.setCredenciamento(credenciamento);
+
+        inscricaoRepository.save(inscricao);
+
 
         return Mapper.convertToDto(inscricao, InscricaoDto.class);
     }

@@ -57,6 +57,62 @@ public class ErrorTreatment {
         return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(InvalidUserCreationException.class)
+    public ResponseEntity<ErrorDto> InvalidUserCreationException
+            (InvalidUserCreationException exception, HttpServletRequest request){
+
+        ErrorDto dto = new ErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT,
+                List.of(exception.getMessage()),
+                request.getServletPath()
+        );
+
+        return new ResponseEntity<>(dto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<ErrorDto> eventNotFoundException
+            (EventNotFoundException exception, HttpServletRequest request){
+
+        ErrorDto dto = new ErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND,
+                List.of(exception.getMessage()),
+                request.getServletPath()
+        );
+
+        return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EventCreationException.class)
+    public ResponseEntity<ErrorDto> eventCreationException
+            (EventCreationException exception, HttpServletRequest request){
+
+        ErrorDto dto = new ErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED,
+                List.of(exception.getMessage()),
+                request.getServletPath()
+        );
+
+        return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InscricaoNotFoundException.class)
+    public ResponseEntity<ErrorDto> inscricaoNotFoundException
+            (InscricaoNotFoundException exception, HttpServletRequest request){
+
+        ErrorDto dto = new ErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND,
+                List.of(exception.getMessage()),
+                request.getServletPath()
+        );
+
+        return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorDto> httpMessageNotReadable
             (HttpMessageNotReadableException exception, HttpServletRequest request) {

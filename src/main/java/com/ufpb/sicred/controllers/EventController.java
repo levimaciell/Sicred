@@ -65,25 +65,6 @@ public class EventController {
         return ResponseEntity.ok(eventDtos); // Retorna 200 OK com a lista de eventos
     }
 
-    @GetMapping(path = "/test")
-    public EventDto getEventoDto(){
-        EventDto dto = new EventDto(
-                1L,
-                "Valorant GO",
-                "valorant",
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                "Split",
-                100,
-                Status.CONCLUIDO,
-                LocalDateTime.now(),
-                1L
-        );
-
-        return dto;
-    }
-
-
     // Métodos de conversão entre DTO e Entidade
     private EventDto convertToDTO(Event event) {
         return new EventDto(

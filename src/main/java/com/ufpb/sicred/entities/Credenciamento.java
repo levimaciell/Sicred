@@ -11,7 +11,7 @@ public class Credenciamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Inscricao inscricao;
 
     @Enumerated(EnumType.STRING)
