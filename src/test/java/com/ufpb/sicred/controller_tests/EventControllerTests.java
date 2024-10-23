@@ -78,26 +78,58 @@ class EventControllerTests {
     @Test
     @WithMockUser(username = "organizador")
     void testListEvents() throws Exception {
+        // Criar o organizador (User) simulado
+        User organizador = new User();
+        organizador.setId(1L);  // Defina o ID do organizador
+        organizador.setNome("organizador");
+
+        // Criar o evento simulado e associar o organizador
+        Event event = new Event();
+        event.setId(1L);
+        event.setNome("Nome do Evento");
+        event.setDescricao("Descrição do Evento");
+        event.setOrganizador(organizador);  // Organizador não pode ser nulo
+
+        // Simulando o comportamento do serviço para retornar uma lista de eventos
         Mockito.when(eventService.getAllEvents()).thenReturn(Arrays.asList(event));
 
+        // Executando a requisição e verificando o resultado
         mockMvc.perform(get("/api/evento"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(event.getId()))
                 .andExpect(jsonPath("$[0].nome").value(event.getNome()))
-                .andExpect(jsonPath("$[0].descricao").value(event.getDescricao()));
+                .andExpect(jsonPath("$[0].descricao").value(event.getDescricao()))
+                .andExpect(jsonPath("$[0].organizadorId").value(organizador.getId()));  // Verificando o organizador
     }
+
 
     @Test
     @WithMockUser(username = "organizador")
     void testGetEvent() throws Exception {
+        // Criar o organizador (User) simulado
+        User organizador = new User();
+        organizador.setId(1L);  // Defina o ID do organizador
+        organizador.setNome("organizador");
+
+        // Criar o evento simulado e associar o organizador
+        Event event = new Event();
+        event.setId(1L);
+        event.setNome("Nome do Evento");
+        event.setDescricao("Descrição do Evento");
+        event.setOrganizador(organizador);  // Organizador não pode ser nulo
+
+        // Simulando o comportamento do serviço para retornar o evento simulado
         Mockito.when(eventService.getEventById(1L)).thenReturn(event);
 
+        // Executando a requisição e verificando o resultado
         mockMvc.perform(get("/api/evento/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(event.getId()))
                 .andExpect(jsonPath("$.nome").value(event.getNome()))
-                .andExpect(jsonPath("$.descricao").value(event.getDescricao()));
+                .andExpect(jsonPath("$.descricao").value(event.getDescricao()))
+                .andExpect(jsonPath("$.organizadorId").value(organizador.getId()));  // Verificando o organizador
     }
+
 
     @Test
     @WithMockUser(username = "organizador")

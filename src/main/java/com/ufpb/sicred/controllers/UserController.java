@@ -21,12 +21,21 @@ public class UserController {
         this.service = service;
     }
 
+//    @PostMapping
+//    public ResponseEntity createUser(@RequestBody @Valid UserDto dto, HttpServletRequest request){
+//
+//        service.createUser(dto);
+//        return ResponseEntity.created(URI.create(request.getRequestURI())).build();
+//    }
     @PostMapping
-    public ResponseEntity createUser(@RequestBody @Valid UserDto dto, HttpServletRequest request){
+    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto dto, HttpServletRequest request) {
+        Long createdUserId = service.createUser(dto); // Chama o serviço e obtém o ID
 
-        service.createUser(dto);
-        return ResponseEntity.created(URI.create(request.getRequestURI())).build();
+        // Constrói a URI de localização
+        URI location = URI.create(request.getRequestURI() + "/" + createdUserId);
+        return ResponseEntity.created(location).build();
     }
+
 
     @DeleteMapping(path = "/{id}")
     public void deleteUser(@PathVariable Long id){

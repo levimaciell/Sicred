@@ -23,6 +23,16 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+<<<<<<< HEAD
+
+    public Long createUser(UserDto dto) {
+        dto.setSenha(passwordEncoder.encode(dto.getSenha()));
+        User user = new User(dto);
+
+        // Salva o usuário e retorna o ID gerado
+        user = repository.save(user);
+        return user.getId(); // Retorna o ID do usuário criado
+=======
     public void createUser(UserDto dto){
 
         if(repository.findByNome(dto.getNome()).isPresent())
@@ -32,7 +42,9 @@ public class UserService {
         User user = new User(dto);
 
         repository.save(user);
+>>>>>>> c0c95ae8a258cfa2c0c2ab7f2989ea6d3301ed1e
     }
+
 
     public void deleteUser(Long id) {
         repository.deleteById(id);

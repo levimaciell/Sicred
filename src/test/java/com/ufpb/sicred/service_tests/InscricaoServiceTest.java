@@ -5,7 +5,9 @@ import com.ufpb.sicred.entities.Credenciamento;
 import com.ufpb.sicred.entities.Event;
 import com.ufpb.sicred.entities.Inscricao;
 import com.ufpb.sicred.entities.User;
+import com.ufpb.sicred.exceptions.EventNotFoundException;
 import com.ufpb.sicred.exceptions.InscricaoNotFoundException;
+import com.ufpb.sicred.exceptions.UserNotFoundException;
 import com.ufpb.sicred.model.StatusCredenciamento;
 import com.ufpb.sicred.model.StatusInscricao;
 import com.ufpb.sicred.repositories.CredenciamentoRepository;
@@ -117,12 +119,21 @@ public class InscricaoServiceTest {
     @Test
     void deleteInscricao_ShouldCallRepositoryDelete() {
         Long idToDelete = 1L;
-        doNothing().when(inscricaoRepository).deleteById(idToDelete);
 
+        // Mock para retornar uma inscrição ao procurar pelo ID
+        Inscricao mockInscricao = new Inscricao();
+        mockInscricao.setId(idToDelete);
+
+        when(inscricaoRepository.findById(idToDelete)).thenReturn(Optional.of(mockInscricao));
+
+        // Chamar o método que está sendo testado
         inscricaoService.deleteInscricao(idToDelete);
 
-        verify(inscricaoRepository, times(1)).deleteById(idToDelete);
+        // Verificar se delete foi chamado uma vez com a inscrição mockada
+        verify(inscricaoRepository, times(1)).delete(mockInscricao);
     }
+
+
 
     @Test
     void findInscricaoById_ShouldReturnInscricaoDto_WhenFound() {
@@ -154,5 +165,38 @@ public class InscricaoServiceTest {
 
         verify(inscricaoRepository, times(1)).findById(idToFind);
     }
+
+
+    @Test
+    void createInscricao_ShouldThrowUsuarioNotFoundException_WhenUsuarioDoesNotExist() {
+        // Simulando que o usuário não existe
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Espera que uma exceção seja lançada
+        assertThrows(UserNotFoundException.class, () -> {
+            inscricaoService.createInscricao(inscricaoDto);
+        });
+
+        verify(inscricaoRepository, never()).save(any());
+        verify(credenciamentoRepository, never()).save(any());
+    }
+
+    @Test
+    void createInscricao_ShouldThrowEventoNotFoundException_WhenEventoDoesNotExist() {
+        // Simulando que o evento não existe
+        User user = new User();
+        user.setId(1L);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(eventRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Espera que uma exceção seja lançada
+        assertThrows(EventNotFoundException.class, () -> {
+            inscricaoService.createInscricao(inscricaoDto);
+        });
+
+        verify(inscricaoRepository, never()).save(any());
+        verify(credenciamentoRepository, never()).save(any());
+    }
+
 
 }

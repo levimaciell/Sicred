@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface CredenciamentoRepository extends JpaRepository<Credenciamento, Long> {
 
     Credenciamento findByInscricao(Inscricao inscricao);
+    void deleteByInscricaoId(Long inscricaoId);
 
 }

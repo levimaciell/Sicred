@@ -1,12 +1,15 @@
 package com.ufpb.sicred.controllers;
 
 import com.ufpb.sicred.dto.inscricao.InscricaoDto;
+import com.ufpb.sicred.exceptions.InscricaoNotFoundException;
 import com.ufpb.sicred.services.InscricaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -27,8 +30,17 @@ public class InscricaoController {
     @PostMapping
     public ResponseEntity<InscricaoDto> createInscricao(@Valid @RequestBody InscricaoDto dto) {
         InscricaoDto createdInscricao = inscricaoService.createInscricao(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdInscricao);
+
+        // Cria a URI do recurso
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdInscricao.getId())
+                .toUri();
+
+        // Retorna a resposta com o cabeçalho "Location"
+        return ResponseEntity.created(location).body(createdInscricao);
     }
+
 
 
 //    @DeleteMapping(path = "/{id}")
@@ -46,6 +58,12 @@ public class InscricaoController {
     @GetMapping(path = "/{id}")
     public InscricaoDto listInscricao(@PathVariable Long id) {
         return inscricaoService.listInscricao(id);
+    }
+
+    // Trata a exceção de inscrição não encontrada
+    @ExceptionHandler(InscricaoNotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(InscricaoNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @GetMapping
