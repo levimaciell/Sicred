@@ -23,13 +23,15 @@ public class UserService {
     }
 
 
-    public void createUser(UserDto dto){
+    public Long createUser(UserDto dto) {
         dto.setSenha(passwordEncoder.encode(dto.getSenha()));
         User user = new User(dto);
 
-        repository.save(user);
-
+        // Salva o usuário e retorna o ID gerado
+        user = repository.save(user);
+        return user.getId(); // Retorna o ID do usuário criado
     }
+
 
     public void deleteUser(Long id) {
         repository.deleteById(id);

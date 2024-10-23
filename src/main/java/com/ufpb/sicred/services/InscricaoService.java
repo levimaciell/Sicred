@@ -59,9 +59,21 @@ public class InscricaoService {
         return Mapper.convertToDto(inscricao, InscricaoDto.class);
     }
 
+//    public void deleteInscricao(Long id) {
+//        Inscricao inscricao = inscricaoRepository.findById(id)
+//                .orElseThrow(() -> new InscricaoNotFoundException("Inscrição não encontrada"));
+//        inscricaoRepository.delete(inscricao);
+//    }
+
     public void deleteInscricao(Long id) {
+        // Verifica se a inscrição existe
         Inscricao inscricao = inscricaoRepository.findById(id)
                 .orElseThrow(() -> new InscricaoNotFoundException("Inscrição não encontrada"));
+
+        // Remove todos os credenciamentos relacionados à inscrição
+        credenciamentoRepository.deleteById(id);  // Método para deletar credenciamentos associados
+
+        // Agora, remove a inscrição
         inscricaoRepository.delete(inscricao);
     }
 
