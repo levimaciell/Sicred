@@ -3,8 +3,13 @@ package com.ufpb.sicred.integration_tests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufpb.sicred.dto.user.UserDto;
 import com.ufpb.sicred.dto.user.UserListDto;
+import com.ufpb.sicred.entities.Tipo_usuario;
+import com.ufpb.sicred.entities.User;
+import com.ufpb.sicred.exceptions.UserNotFoundException;
 import com.ufpb.sicred.repositories.UserRepository;
+import com.ufpb.sicred.services.UserService;
 import org.junit.jupiter.api.*;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -26,10 +32,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @WithMockUser(username = "testuser")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Transactional
 public class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository; // Alterado para injetar o repositório real
+
+    @Autowired
+    private UserService userService;
     private UserDto userDto;
     private Long createdUserId;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -37,6 +50,10 @@ public class UserControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         userDto = new UserDto("Cypher", "cypher@gmail.com", "baldtraps");
+        if (!userRepository.existsById(1L)) { // Verifique se o usuário nativo já existe
+                UserDto nativeUserDto = new UserDto("nativo", "nativo@example.com", "senhaNativa");
+            userService.createUser(nativeUserDto);
+        }
 
     }
 
@@ -51,19 +68,28 @@ public class UserControllerIntegrationTest {
         String location = result.getResponse().getHeader("Location");
         System.out.println("Location header: " + location); // Adicione esta linha para depuração
 
-        if (location != null && location.matches(".*/(\\d+)$")) { // Verifique se a localização termina com um número
+        if (location != null && location.matches(".*/(\\d+)$")) {
             return Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
         } else {
             throw new IllegalStateException("Invalid Location header: " + location);
         }
     }
 
-
     @Test
-    void createUser() throws Exception {
-        createdUserId = createUserAndGetId();
-        Assertions.assertNotNull(createdUserId, "O ID do usuário criado deve ser válido.");
+    void testCreateUserIntegration() throws Exception {
+        String jsonRequest = "{ \"nome\": \"testUser\", \"email\": \"test@example.com\", \"senha\": \"password123\" }";
+
+        mockMvc.perform(post("/api/usuario")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isCreated());
+
+        // Verifica se o usuário foi salvo no banco de dados
+        List<User> users = userRepository.findAll();
+        assertEquals(2, users.size());
+        assertEquals("testUser", users.get(1).getNome());
     }
+
 
     @Test
     void listUserById() throws Exception {
@@ -97,13 +123,18 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    void deleteUser() throws Exception {
-        createdUserId = createUserAndGetId();
+    void testDeleteUser() throws Exception {
+        // Cria um usuário para ser excluído
+        UserDto userDto = new UserDto("deleteUser", "delete@example.com", "password123");
+        Long createdUserId = userService.createUser(userDto);
 
         mockMvc.perform(delete("/api/usuario/" + createdUserId))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/usuario/" + createdUserId))
-                .andExpect(status().isNotFound());
+        // Verifica se o usuário foi excluído e o nativo ainda está presente
+        assertFalse(userRepository.existsById(createdUserId));
+        assertTrue(userRepository.existsById(1L)); // Verifique se o usuário nativo ainda está presente
     }
+
+
 }

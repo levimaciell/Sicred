@@ -20,7 +20,6 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    // Criar Evento (somente organizador)
     @PostMapping("/user/{userId}")
     public ResponseEntity<EventDto> createEvent(@Valid @RequestBody EventDto eventDto, @PathVariable Long userId) {
         eventDto.setDataCriacao(LocalDateTime.now());

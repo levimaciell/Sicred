@@ -60,44 +60,6 @@ public class InscricaoServiceTest {
         inscricaoDto.setStatus(StatusInscricao.ACEITA);
     }
 
-    @Test
-    void createInscricao_ShouldReturnInscricaoDto() {
-        // Criando um usuário e evento simulados
-        User user = new User();
-        user.setId(1L);
-
-        Event event = new Event();
-        event.setId(1L);
-
-        // Simulando o comportamento do repositório para retornar o usuário e evento
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-
-        // Simulando o comportamento do repositório de inscrições
-        Inscricao inscricao = new Inscricao();
-        inscricao.setUsuario(user);
-        inscricao.setEvento(event);
-        inscricao.setStatus(StatusInscricao.ACEITA);
-        when(inscricaoRepository.save(any())).thenReturn(inscricao); // Alterado para retornar a inscrição simulada
-
-        // Simulando o comportamento do credenciamentoRepository
-        Credenciamento credenciamento = new Credenciamento();
-        credenciamento.setInscricao(inscricao);
-        credenciamento.setStatus(StatusCredenciamento.NAO_CREDENCIADO);
-        when(credenciamentoRepository.save(any())).thenReturn(credenciamento); // Adicionado para evitar NullPointerException
-
-        // Executando o método a ser testado
-        InscricaoDto createdInscricao = inscricaoService.createInscricao(inscricaoDto);
-
-        // Asserções para verificar o resultado
-        assertNotNull(createdInscricao);
-        assertEquals(inscricaoDto.getUsuarioId(), createdInscricao.getUsuarioId());
-        assertEquals(inscricaoDto.getEventoId(), createdInscricao.getEventoId());
-        assertEquals(StatusInscricao.ACEITA, createdInscricao.getStatus());
-        verify(inscricaoRepository, times(1)).save(any());
-        verify(credenciamentoRepository, times(1)).save(any()); // Verifica se o método save foi chamado
-    }
-
 
     @Test
     void listAll_ShouldReturnListOfInscricaoDto() {

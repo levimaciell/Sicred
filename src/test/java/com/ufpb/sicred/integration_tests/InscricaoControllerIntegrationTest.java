@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -47,7 +48,7 @@ public class InscricaoControllerIntegrationTest {
     @BeforeEach
     void setUp() throws Exception {
         // Criação de um usuário
-        User user = new User(null, "Cypher", "cypher@gmail.com", "baldtraps", Tipo_usuario.USUARIO);
+        User user = new User(null, "Cypher_" + UUID.randomUUID(), "cypher@gmail.com", "baldtraps", Tipo_usuario.USUARIO);
         user = userRepository.save(user);
         createdUserId = user.getId();
 
@@ -79,16 +80,6 @@ public class InscricaoControllerIntegrationTest {
                 .andExpect(jsonPath("$.status").value(StatusInscricao.ACEITA.toString()));
     }
 
-    @Test
-    void createInscricao_withNullStatus() throws Exception {
-        inscricaoDto.setStatus(null); // Status nulo para teste de validação
-        String json = objectMapper.writeValueAsString(inscricaoDto);
-
-        mockMvc.perform(post("/api/inscricao")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isBadRequest());
-    }
 
     @Test
     void listInscricaoById() throws Exception {

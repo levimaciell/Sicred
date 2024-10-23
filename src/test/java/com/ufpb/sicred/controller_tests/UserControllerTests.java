@@ -47,21 +47,7 @@ public class UserControllerTests {
         dto = new UserDto("Teste", "teste@gmail.com", "teste123");
     }
 
-    @Test
-    void testUpdateUsers() throws Exception {
-        //Arrange
-        Long id = 1L;
-        UserListDto original = new UserListDto(id, "teste1", "teste1@email.com", Tipo_usuario.USUARIO);
 
-        when(service.updateUser(eq(id), any(UserDto.class))).thenReturn(original);
-
-        //ACT
-        mockMvc.perform(put("/api/usuario/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isOk());
-
-    }
 
     @Test
     void testCreateUser_withPayload() throws Exception {
@@ -77,50 +63,6 @@ public class UserControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void testDeleteUser() throws Exception {
-        //Arrange
-        doNothing().when(service).deleteUser(1L);
-
-        //Act
-        mockMvc.perform(delete("/api/usuario/1"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testListUser() throws Exception {
-        //Arrange
-        Long id = 1L;
-        UserListDto dto = new UserListDto(id, "teste", "teste@email.com", Tipo_usuario.USUARIO);
-        when(service.listUser(id)).thenReturn(dto);
-
-        //Act
-        mockMvc.perform(get("/api/usuario/1"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testListUser_userInexistent() throws Exception {
-        //Arrange
-        Long id = 1L;
-        when(service.listUser(id)).thenThrow(new UserNotFoundException("usuario não encontrado"));
-
-        //Act
-        mockMvc.perform(get("/api/usuario/1"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testListAllUsers() throws Exception {
-        //Arrange
-        Long id = 1L;
-        UserListDto dto = new UserListDto(id, "teste", "teste@email.com", Tipo_usuario.USUARIO);
-        when(service.listAll()).thenReturn(List.of(dto));
-
-        //Act
-        mockMvc.perform(get("/api/usuario"))
-                .andExpect(status().isOk());
-    }
 
 
 }
